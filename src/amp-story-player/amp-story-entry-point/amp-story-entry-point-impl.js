@@ -15,6 +15,7 @@
  */
 
 // Source for this constant is css/amp-story-entry-point.css
+import {AmpStoryPlayer} from '../amp-story-player-impl';
 import {cssText} from '../../../build/amp-story-entry-point.css';
 
 /** @const {string} */
@@ -57,6 +58,9 @@ export class AmpStoryEntryPoint {
     /** @private {?Element} */
     this.rootEl_ = null;
 
+    /** @private {?AmpStoryPlayer} */
+    this.player_ = null;
+
     /** @private {string} */
     this.storyUrl_ = this.element_.getAttribute('storyUrl');
   }
@@ -68,8 +72,28 @@ export class AmpStoryEntryPoint {
     }
 
     this.initializeShadowRoot_();
+    this.buildPlayer();
 
     this.isBuilt_ = true;
+  }
+
+  /**
+   *
+   */
+  buildPlayer() {
+    const playerEl = this.doc_.createElement('amp-story-player');
+    playerEl.setAttribute('autoplay', '');
+    playerEl.setAttribute('circular', '');
+
+    const story = this.doc_.createElement('a');
+    story.href = this.storyUrl_;
+    playerEl.appendChild(story);
+
+    this.player_ = new AmpStoryPlayer(this.win_, playerEl);
+    //this.player_.add([{href: this.storyUrl_}]);
+    this.player_.buildCallback();
+
+    this.rootEl_.appendChild(playerEl);
   }
 
   /** @public */
@@ -77,6 +101,8 @@ export class AmpStoryEntryPoint {
     if (this.isLaidOut_) {
       return;
     }
+
+    this.player_.layoutCallback();
 
     this.isLaidOut_ = true;
   }
