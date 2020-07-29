@@ -17,6 +17,9 @@
 // Source for this constant is css/amp-story-entry-point.css
 import {cssText} from '../../../build/amp-story-entry-point.css';
 
+/** @const {string} */
+export const STORY_URL_ATTRIBUTE = 'storyUrl';
+
 /**
  * <amp-story-entry-point> component for embedding stories and launching them in
  * the <amp-story-player>.
@@ -31,6 +34,11 @@ export class AmpStoryEntryPoint {
    * @constructor
    */
   constructor(win, element) {
+    console./*OK*/ assert(
+      element.hasAttribute('storyUrl'),
+      'Missing story URL.'
+    );
+
     /** @private {!Window} */
     this.win_ = win;
 
@@ -48,6 +56,9 @@ export class AmpStoryEntryPoint {
 
     /** @private {?Element} */
     this.rootEl_ = null;
+
+    /** @private {string} */
+    this.storyUrl_ = this.element_.getAttribute('storyUrl');
   }
 
   /** @public */
